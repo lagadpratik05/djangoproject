@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h2 class="page-title">My Bookings</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if bookings %}
+        <div class="table-wrapper">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Trek</th>
+                        <th>Dates</th>
+                        <th>Persons</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.destination.name }}</td>
+                        <td>
+                            {{ booking.start_date }} <br>
+                            <small>to</small> <br>
+                            {{ booking.end_date }}
+                        </td>
+                        <td>{{ booking.persons }}</td>
+                        <td>₹ {{ booking.amount }}</td>
+                        <td>
+                            <span class="status {{ booking.status }}">
+                                {{ booking.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if booking.status != "cancelled" %}
+                                <form method="post"
+                                      action="{% url 'cancel_booking' booking.id %}"
+                                      onsubmit="return confirm('Cancel this booking?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn danger small">
+                                        Cancel
+                                    </button>
+                                </form>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-text">You have no bookings yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

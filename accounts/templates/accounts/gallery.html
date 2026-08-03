@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}TREKORA{% endblock %}
+
+{% block content %}
+
+<section class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Heading -->
+    <div class="text-center mb-16 reveal" data-delay="100">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        Photo <span class="text-orange-600">Gallery</span>
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Discover the stunning landscapes of Maharashtra's trekking destinations
+      </p>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal" data-delay="200">
+
+      {% for image in gallery_images %}
+      <div class="relative group cursor-pointer overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
+           onclick="openModal('{{ image.src }}', '{{ image.alt }}', '{{ image.location }}')">
+
+        <img src="{{ image.src }}"
+             alt="{{ image.alt }}"
+             class="w-full h-72 object-cover transition-transform duration-300 group-hover:scale-110">
+
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300">
+          <div class="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="font-semibold text-lg">{{ image.alt }}</h3>
+            <p class="text-sm text-gray-200">{{ image.location }}</p>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="galleryModal"
+     class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
+
+  <div class="relative max-w-4xl w-full">
+    <button onclick="closeModal()"
+            class="absolute -top-12 right-0 text-white hover:text-gray-300 text-3xl">
+      ✕
+    </button>
+
+    <img id="modalImage" src="" alt="" class="w-full h-auto rounded-lg">
+
+    <div class="text-white mt-4 text-center">
+      <h3 id="modalTitle" class="text-2xl font-bold"></h3>
+      <p id="modalLocation" class="text-gray-300"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(src, title, location) {
+  document.getElementById("modalImage").src = src;
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalLocation").innerText = location;
+  document.getElementById("galleryModal").classList.remove("hidden");
+  document.getElementById("galleryModal").classList.add("flex");
+}
+
+function closeModal() {
+  document.getElementById("galleryModal").classList.add("hidden");
+  document.getElementById("galleryModal").classList.remove("flex");
+}
+</script>
+
+{% endblock %}

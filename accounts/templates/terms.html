@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Terms & Conditions | Trekora</title>
+
+  <link rel="icon" href="{% static 'images/favicon.png' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50">
+
+<section class="min-h-screen py-20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Back button -->
+    <a href="javascript:history.back()"
+       class="flex items-center text-orange-600 hover:text-orange-700 mb-6 font-medium">
+      ← Back
+    </a>
+
+    <!-- Card -->
+    <div class="bg-white rounded-xl shadow-md p-8 reveal">
+
+      <h1 class="text-3xl font-bold text-gray-900 mb-6">
+        Terms and Conditions
+      </h1>
+
+      <p class="text-sm text-gray-500 mb-8">
+        Last updated: October 2025
+      </p>
+
+      <div class="space-y-6 text-gray-700">
+        <!-- sections exactly like JSX -->
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'js/reveal.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<div style="max-width: 500px; margin: auto; padding: 80px 20px; text-align: center;">
+
+    <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+        Complete Payment
+    </h2>
+
+    <p style="font-size: 18px; margin-bottom: 30px;">
+        Amount: ₹{{ amount_rupees }}
+    </p>
+
+    <!-- 💳 Razorpay -->
+    <button id="pay-btn"
+        style="width: 100%; padding: 12px; background: orange; color: white; border: none; border-radius: 8px; margin-bottom: 15px; font-weight: bold;">
+        Pay with Razorpay
+    </button>
+
+    <!-- 📱 QR -->
+    <button id="qr-btn"
+        style="width: 100%; padding: 12px; background: black; color: white; border: none; border-radius: 8px; font-weight: bold;">
+        Pay via QR
+    </button>
+
+</div>
+
+<!-- 🔥 QR MODAL -->
+<div id="qr-modal"
+     style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;">
+
+    <div style="
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        margin: 100px auto;
+        text-align: center;
+    ">
+
+        <h3 style="margin-bottom: 15px;">Scan & Pay</h3>
+
+        <img src="{% static 'images/qrcode.png' %}?v=2" width="200" style="margin-bottom: 15px;">
+
+        <p style="font-size: 14px; margin-bottom: 15px;">
+            After payment click below
+        </p>
+
+        <form method="POST" action="{% url 'qr_payment_submit' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input type="file" name="payment_screenshot" required style="margin-bottom:10px;">
+
+            <button type="submit"
+                style="background: green; color: white; padding: 8px; border-radius: 5px;">
+                Upload & Confirm
+            </button>
+        </form>
+
+        <button onclick="closeQR()"
+            style="color: red; border: none; background: none;">
+            Cancel
+        </button>
+
+    </div>
+</div>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+// 🔥 FORCE HIDE ON LOAD (IMPORTANT)
+window.onload = function() {
+    document.getElementById('qr-modal').style.display = "none";
+};
+
+
+// 💳 Razorpay Payment
+document.getElementById('pay-btn').onclick = function(e){
+
+    var options = {
+        key: "{{ razorpay_key|default:'' }}",
+        amount: Number("{{ amount_paise|default:0 }}"),
+        currency: "INR",
+        name: "Trekora",
+        description: "Booking Payment",
+        order_id: "{{ order_id|default:'' }}",
+
+        handler: function (response){
+
+            fetch("/payment-success/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    payment_id: response.razorpay_payment_id,
+                    order_id: response.razorpay_order_id,
+                    signature: response.razorpay_signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                window.location.href = "/my-bookings/";
+            });
+
+        },
+
+        modal: {
+            ondismiss: function(){
+                window.location.href = "/payment-failed/";
+            }
+        }
+    };
+
+    console.log("OPTIONS:", options);
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+
+    e.preventDefault();
+};
+
+
+// 📱 QR OPEN
+document.getElementById('qr-btn').onclick = function(){
+    document.getElementById('qr-modal').style.display = "block";
+};
+
+
+// 📱 QR CLOSE
+function closeQR(){
+    document.getElementById('qr-modal').style.display = "none";
+}
+
+</script>
+
+{% endblock %}

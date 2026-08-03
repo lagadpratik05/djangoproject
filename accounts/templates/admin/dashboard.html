@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-6 py-16">
+
+    <h1 class="text-3xl font-bold mb-8">
+        Admin Dashboard
+    </h1>
+
+    <div class="overflow-x-auto bg-white shadow rounded-lg">
+
+        <table class="min-w-full">
+
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left">User</th>
+                    <th class="p-3">Destination</th>
+                    <th class="p-3">Amount</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Proof</th>
+                    <th class="p-3">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for booking in bookings %}
+                <tr class="border-t text-center">
+
+                    <td class="p-3">
+                        {{ booking.user.username }}
+                    </td>
+
+                    <td class="p-3">
+                        {{ booking.destination.name }}
+                    </td>
+
+                    <td class="p-3">
+                        ₹{{ booking.amount }}
+                    </td>
+
+                    <td class="p-3">
+                        <span class="px-3 py-1 rounded-full
+                            {% if booking.status == 'confirmed' %}
+                                bg-green-100 text-green-600
+                            {% elif booking.status == 'pending' %}
+                                bg-yellow-100 text-yellow-600
+                            {% else %}
+                                bg-red-100 text-red-600
+                            {% endif %}
+                        ">
+                            {{ booking.status|title }}
+                        </span>
+                    </td>
+
+                    <!-- 🔥 Screenshot -->
+                    <td class="p-3">
+                        {% if booking.payment_screenshot %}
+                            <a href="{{ booking.payment_screenshot.url }}" target="_blank">
+                                <img src="{{ booking.payment_screenshot.url }}"
+                                     class="h-16 mx-auto rounded shadow">
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <!-- 🔥 Actions -->
+                    <td class="p-3 space-x-2">
+
+                {% if booking.status == "pending" %}
+
+                            <a href="{% url 'update_booking_status' booking.id 'confirmed' %}"
+                            class="bg-green-500 text-white px-3 py-1 rounded">
+                                Approve
+                            </a>
+
+                            <a href="{% url 'update_booking_status' booking.id 'cancelled' %}"
+                            class="bg-red-500 text-white px-3 py-1 rounded">
+                                Cancel
+                            </a>
+
+                {% else %}
+                <span class="text-gray-400">No action</span>
+                {% endif %}
+
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <h2 class="text-xl font-bold mt-10 mb-4">Manage Destinations</h2>
+
+        <a href="{% url 'add_destination' %}"
+        class="bg-blue-500 text-white px-4 py-2 rounded">
+        + Add Destination
+        </a>
+
+        <table class="w-full mt-4 bg-white shadow rounded">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+
+            {% for d in destinations %}
+            <tr class="text-center border-t">
+                <td>{{ d.name }}</td>
+                <td>₹{{ d.price }}</td>
+
+                <td>
+                    <a href="{% url 'edit_destination' d.id %}"
+                    class="bg-yellow-500 text-white px-2 py-1 rounded">
+                    Edit
+                    </a>
+
+                    <a href="{% url 'delete_destination' d.id %}"
+                    class="bg-red-500 text-white px-2 py-1 rounded">
+                    Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %}

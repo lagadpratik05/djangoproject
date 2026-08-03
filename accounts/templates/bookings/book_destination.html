@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}
+Book {{ destination.name }} | Trekora
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-6 py-16">
+
+  <h1 class="text-3xl font-bold mb-2">
+    Book {{ destination.name }}
+  </h1>
+
+  <p class="text-gray-600 mb-6">
+    ₹{{ destination.price }} per person
+  </p>
+
+  <p class="text-sm text-gray-600 mb-2">
+    Available slots today:
+    <span class="font-semibold">
+      {{ destination.capacity_per_day }}
+    </span>
+  </p>
+
+  {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+        <div class="p-3 rounded bg-red-100 text-red-700">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <p class="text-sm text-gray-600 mb-2">
+  Booking allowed from 
+  <span class="font-semibold text-orange-600">
+    {{ season_start|date:"F d" }} – {{ season_end|date:"F d" }}
+  </span>
+</p>
+
+  <!-- 🔥 SIMPLE BOOKING FORM (NO QR / NO SCREENSHOT) -->
+  <form method="POST"
+        class="bg-white rounded-xl shadow p-6 space-y-4">
+    {% csrf_token %}
+
+    <input type="date" name="start_date"
+       min="{{ season_start|default:today }}"
+       max="{{ season_end }}"
+       class="w-full border p-2 rounded"
+       required>
+
+    <input type="date" name="end_date"
+       min="{{ season_start|default:today }}"
+       max="{{ season_end }}"
+       class="w-full border p-2 rounded"
+       required>
+
+    <div>
+      <label class="block font-medium">Persons</label>
+      <input type="number" name="persons" min="1" value="1" required
+             class="w-full border p-2 rounded">
+    </div>
+
+    <div>
+      <label class="block font-medium">Mobile Number</label>
+      <input type="tel" name="mobile_number" required
+            pattern="[6-9]{1}[0-9]{9}"
+            maxlength="10"
+            placeholder="Enter 10-digit mobile number"
+            class="w-full border p-2 rounded">
+    </div>
+
+    <button
+      class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold">
+      Proceed to Pay
+    </button>
+
+  </form>
+
+</div>
+
+{% endblock %}

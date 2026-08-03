@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}TREKORA{% endblock %}
+
+{% block content %}
+
+<section class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal" data-delay="100">
+
+    <!-- Heading -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        Plan Your <span class="text-orange-600">Adventure</span>
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Ready to explore Maharashtra's beautiful treks? Get in touch with us
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- LEFT INFO -->
+      <div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-6">
+          Get In Touch
+        </h3>
+
+        <div class="space-y-6">
+
+          <div class="flex items-center space-x-4">
+            <div class="bg-orange-600 p-3 rounded-full text-white">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Phone</h4>
+              <a href="tel:+917499433449" class="text-gray-600 hover:text-orange-600">
+                +91 74994 33449
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <div class="bg-orange-600 p-3 rounded-full text-white">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Email</h4>
+              <a href="mailto:contact.trekoraadventures@gmail.com"
+                 class="text-gray-600 hover:text-orange-600 break-all">
+                contact.trekoraadventures@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <div class="bg-orange-600 p-3 rounded-full text-white">
+              <i class="fa-brands fa-instagram"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Instagram</h4>
+              <a href="https://www.instagram.com/trekora_org/" target="_blank"
+                 class="text-gray-600 hover:text-orange-600">
+                @trekora_org
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <div class="bg-orange-600 p-3 rounded-full text-white">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900">Location</h4>
+              <p class="text-gray-600">Maharashtra, India</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-8 p-6 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl text-white">
+          <h4 class="text-xl font-bold mb-2">Why Choose TREKORA?</h4>
+          <ul class="space-y-2 text-sm">
+            <li>• Explore Maharashtra's scenic treks</li>
+            <li>• Expert local guides</li>
+            <li>• Safe and organized trips</li>
+            <li>• Affordable packages</li>
+            <li>• Memorable adventures</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- RIGHT FORM -->
+      <div class="bg-white p-8 rounded-2xl shadow-lg">
+        <form method="POST" class="space-y-6">
+          {% csrf_token %}
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Full Name *</label>
+              <input type="text" name="name" required
+                     class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-600">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Email *</label>
+              <input type="email" name="email" required
+                     class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-600">
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Phone</label>
+              <input type="text" name="phone"
+                     class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-600">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Interested Trek</label>
+              <select name="trek"
+                      class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-600">
+                <option value="">Select</option>
+                <option value="General Inquiry">General Inquiry</option>
+                <option value="Custom Trek">Custom Trek Request</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">Message</label>
+            <textarea name="message" rows="4"
+                      class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-600"></textarea>
+          </div>
+
+          <button type="submit"
+                  class="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 rounded-lg font-semibold">
+            Send Message
+          </button>
+
+          {% if messages %}
+            {% for message in messages %}
+              <p class="text-green-600 text-center mt-4">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

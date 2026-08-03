@@ -1,0 +1,315 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}TREKORA{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="icon" href="{% static 'images/trekora1.png' %}">
+    <link rel="shortcut icon" href="{% static 'images/trekora1.png' %}">
+
+
+    <!-- Icons (Lucide equivalent via FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- ================= HEADER ================= -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+
+            <!-- Logo -->
+            <a href="{% url 'dashboard' %}" class="flex items-center space-x-3">
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <img src="{% static 'images/trekora1.png' %}" alt="TREKORA" class="h-10 w-auto">
+                </div>
+                <span class="text-2xl font-bold text-gray-800 hover:text-orange-600">
+                    TREKORA
+                </span>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-lg">
+
+                <a href="{% url 'dashboard' %}" class="hover:text-orange-600">Home</a>
+                <a href="{% url 'destinations' %}" class="hover:text-orange-600">Destinations</a>
+                <a href="{% url 'services' %}" class="hover:text-orange-600">Services</a>
+                <a href="{% url 'gallery' %}" class="hover:text-orange-600">Gallery</a>
+                <a href="{% url 'contact' %}" class="hover:text-orange-600">Contact</a>
+
+                {% if user.is_authenticated %}
+
+                    <!-- Book Now -->
+                    <a href="{% url 'my_bookings' %}"
+                    class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-full font-semibold transition">
+                    My Bookings
+                    </a>
+
+                    <!-- User dropdown -->
+                    <div class="relative">
+
+                    <!-- Avatar -->
+                    <button id="userMenuBtn"
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-white text-gray-700 hover:bg-gray-100 transition">
+                        <i class="fa-regular fa-user"></i>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div id="userDropdown"
+                        class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-xl border z-[9999]">
+
+                        <a href="{% url 'profile' %}"
+                        class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-gray-700">
+                        <i class="fa-regular fa-user"></i>
+                        Your Profile
+                        </a>
+
+                        <a href="{% url 'logout' %}"
+                        class="logout flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-red-600">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                        </a>
+
+                    </div>
+                    </div>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}"
+                    class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-full font-semibold transition">
+                    Sign In
+                    </a>
+
+                {% endif %}
+            </nav>
+
+
+        </div>
+    </div>
+</header>
+
+<!-- ================= PAGE CONTENT ================= -->
+<main class="content pt-24">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gray-900 text-white reveal" data-delay="100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 reveal" data-delay="100">
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="bg-white p-2 rounded-lg">
+            <img src="{% static 'images/trekora1.png' %}" alt="TREKORA" class="h-10 w-auto">
+          </div>
+          <span class="text-2xl font-bold">TREKORA</span>
+        </div>
+
+        <p class="text-gray-400 mb-6 text-sm leading-relaxed">
+          Your gateway to unforgettable trekking adventures across Maharashtra.
+          Explore nature, challenge yourself, and create lasting memories.
+        </p>
+      </div>
+
+      <!-- Explore -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-orange-500">Explore</h3>
+        <ul class="space-y-3 text-sm">
+          <li><a href="{% url 'dashboard' %}" class="text-gray-400 hover:text-orange-500">Home</a></li>
+          <li><a href="{% url 'destinations' %}" class="text-gray-400 hover:text-orange-500">Destinations</a></li>
+          <li><a href="{% url 'services' %}" class="text-gray-400 hover:text-orange-500">Services</a></li>
+          <li><a href="{% url 'gallery' %}" class="text-gray-400 hover:text-orange-500">Gallery</a></li>
+          <li><a href="{% url 'contact' %}" class="text-gray-400 hover:text-orange-500">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-orange-500">Get in Touch</h3>
+
+        <div class="space-y-4 text-sm">
+
+          <a href="tel:+917499433449"
+             class="flex items-center space-x-3 text-gray-400 hover:text-orange-500">
+            <i class="fa-solid fa-phone"></i>
+            <span>+91 74994 33449</span>
+          </a>
+
+          <a href="mailto:contact.trekoraadventures@gmail.com"
+             class="flex items-start space-x-3 text-gray-400 hover:text-orange-500 break-all">
+            <i class="fa-solid fa-envelope mt-0.5"></i>
+            <span>contact.trekoraadventures@gmail.com</span>
+          </a>
+
+          <a href="https://www.instagram.com/trekora_org/" target="_blank"
+             class="flex items-center space-x-3 text-gray-400 hover:text-orange-500">
+            <i class="fa-brands fa-instagram"></i>
+            <span>@trekora_org</span>
+          </a>
+
+          <div class="flex items-start space-x-3 text-gray-400">
+            <i class="fa-solid fa-location-dot text-orange-500 mt-0.5"></i>
+            <span>Maharashtra, India</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-gray-800 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-gray-500 text-sm">
+        © 2025 TREKORA. All rights reserved.
+      </p>
+      <div class="flex gap-6 text-sm">
+        <a href="{% url 'privacy' %}" class="text-gray-500 hover:text-orange-500">Privacy Policy</a>
+        <a href="{% url 'terms' %}" class="text-gray-500 hover:text-orange-500">Terms & Conditions</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+/* ================= NAVBAR STATES ================= */
+/* ===== FIX USER DROPDOWN ON HERO ===== */
+#userDropdown {
+  background: #ffffff !important;
+  color: #1f2937 !important; /* gray-800 */
+  z-index: 9999 !important;
+}
+
+/* Ensure dropdown text is always dark */
+#userDropdown a {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* Logout stays red */
+#userDropdown a.logout {
+  color: #dc2626 !important; /* red-600 */
+}
+
+#userDropdown a.logout:hover {
+  color: #b91c1c !important; /* red-700 */
+}
+
+
+
+#navbar.on-hero {
+  background: rgba(153, 152, 152, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: transparent;
+}
+/* Force logout red even on hero */
+#navbar.on-hero #userDropdown a.logout {
+  color: #dc2626 !important; /* red-600 */
+}
+
+#navbar.on-hero #userDropdown a.logout:hover {
+  color: #b91c1c !important; /* red-700 */
+}
+
+
+/* white text on hero */
+#navbar.on-hero,
+#navbar.on-hero a:not(.bg-orange-600) {
+  color: white;
+}
+
+#navbar.on-hero .text-gray-800 {
+  color: white !important;
+}
+
+/* ================= AFTER HERO ================= */
+#navbar:not(.on-hero) {
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Ensure orange buttons stay orange even on hero */
+#navbar.on-hero .bg-orange-600,
+#navbar.on-hero .bg-orange-600:hover {
+  color: white !important;
+}
+
+#hero {
+  height: 100vh;
+  margin-top: -80px; /* navbar height */
+}
+
+#hero .hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+/* Optional: Mobile menu styles */
+@media (max-width: 768px) {
+  #navbar .md\\:hidden {
+    display: none;
+  }
+}
+</style>
+
+<script>
+  const navbar = document.getElementById("navbar");
+  const hero = document.getElementById("hero");
+
+  if (navbar && hero) {
+    const heroHeight = hero.offsetHeight;
+
+    function updateNavbar() {
+      if (window.scrollY < heroHeight - 80) {
+        navbar.classList.add("on-hero");
+      } else {
+        navbar.classList.remove("on-hero");
+      }
+    }
+
+    window.addEventListener("scroll", updateNavbar);
+    updateNavbar(); // run on load
+  }
+  
+  // Initialize Lucide icons
+  document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+  });
+</script>
+
+
+<script src="{% static 'js/reveal.js' %}"></script>
+
+<script>
+  const userBtn = document.getElementById("userMenuBtn");
+  const dropdown = document.getElementById("userDropdown");
+
+  if (userBtn && dropdown) {
+    userBtn.addEventListener("click", () => {
+      dropdown.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add("hidden");
+      }
+    });
+  }
+</script>
+
+
+</body>
+</html>

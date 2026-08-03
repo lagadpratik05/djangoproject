@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}TREKORA{% endblock %}
+
+{% block content %}
+
+<section class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <h1 class="text-4xl font-bold text-center mb-14">
+      Featured <span class="text-orange-600">Destinations</span>
+    </h1>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 reveal" data-delay="200">
+
+      {% for d in destinations %}
+      <div class="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden">
+
+        <!-- Image -->
+        <div class="relative">
+          {% if d.image %}
+            <img src="{{ d.image.url }}"
+                 alt="{{ d.name }}"
+                 class="w-full h-56 object-cover">
+          {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}"
+                 class="w-full h-56 object-cover">
+          {% endif %}
+
+          <!-- STATUS -->
+          {% if d.status == "available" %}
+            <span class="absolute top-4 left-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full">
+              AVAILABLE
+            </span>
+          {% else %}
+            <span class="absolute top-4 left-4 bg-red-500 text-white text-xs px-3 py-1 rounded-full">
+              UNAVAILABLE
+            </span>
+          {% endif %}
+
+          <!-- PRICE -->
+          <span class="absolute top-4 right-4 bg-white text-sm font-semibold px-3 py-1 rounded-full shadow">
+            ₹ {{ d.price }}
+          </span>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-3">
+
+          <div class="flex justify-between items-start">
+            <h2 class="text-lg font-bold">
+              {{ d.name }}
+            </h2>
+            <span class="text-yellow  -500">
+              {% if d.avg_rating %}
+                ⭐ {{ d.avg_rating }}
+              {% else %}
+                ⭐ No ratings yet
+              {% endif %}
+            </span>
+          </div>
+
+          <p class="text-sm text-gray-500">
+            📍 {{ d.location }}
+          </p>
+
+          <p class="text-sm text-gray-600">
+            <span class="font-semibold">Why Visit?</span><br>
+            {{ d.description|truncatewords:18 }}
+            <span class="text-orange-600 cursor-pointer">Read More ↓</span>
+          </p>
+
+          <p class="text-sm text-gray-600">
+            <span class="font-semibold">Why Visit?</span><br>
+            {{ d.description|truncatewords:18 }}
+          </p>
+
+          <a href="{% url 'destination_detail' d.id %}"
+            class="text-orange-600 font-semibold inline-block mt-2 hover:underline">
+            Read More →
+          </a>
+
+
+          <div class="flex justify-between items-center text-sm text-gray-500 pt-2">
+            <span>⏱ {{ d.duration }}</span>
+            <span>👥</span>
+          </div>
+
+          {% if d.status == "available" %}
+            <a href="{% url 'book_destination' d.id %}"
+               class="block mt-4 text-center bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-xl font-semibold">
+              Book Now
+            </a>
+          {% else %}
+            <button disabled
+                    class="block w-full mt-4 bg-gray-300 text-gray-600 py-3 rounded-xl font-semibold cursor-not-allowed">
+              Currently Unavailable
+            </button>
+          {% endif %}
+
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

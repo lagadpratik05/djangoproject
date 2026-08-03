@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+TREKORA
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO IMAGE ================= -->
+<div class="relative h-[60vh] w-full">
+  {% if destination.image %}
+    <img src="{{ destination.image.url }}" class="w-full h-full object-cover">
+  {% else %}
+    <img src="{% static 'images/placeholder.jpg' %}" class="w-full h-full object-cover">
+  {% endif %}
+
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <div class="absolute bottom-6 left-6 text-white">
+    <h1 class="text-4xl font-bold mb-2">{{ destination.name }}</h1>
+
+    <div class="flex items-center gap-4 text-sm">
+      <span>📍 {{ destination.location }}</span>
+      <span>⭐ {{ avg_rating }} / 5</span>
+
+      {% if destination.status == "available" %}
+        <span class="bg-green-500 px-3 py-1 rounded-full text-xs">AVAILABLE</span>
+      {% else %}
+        <span class="bg-red-500 px-3 py-1 rounded-full text-xs">UNAVAILABLE</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="max-w-7xl mx-auto px-6 py-14">
+
+  <!-- ===== INFO CARDS ===== -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-gray-500 text-sm">Duration</p>
+      <p class="font-semibold text-lg">{{ destination.duration }}</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <div class="mt-3 text-center">
+        <p class="text-sm text-gray-500">Best Season</p>
+
+        <p class="text-xl font-bold text-orange-600">
+          {% if destination.best_season_start and destination.best_season_end %}
+            {{ destination.best_season_start|date:"F" }} – {{ destination.best_season_end|date:"F" }}
+          {% else %}
+            All year
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-gray-500 text-sm">Temperature</p>
+      <p class="font-semibold text-lg">
+        {{ temperature }}°C
+      </p>
+
+      <p class="text-sm text-gray-500">
+        <p>🌤 {{ weather_desc }}</p>
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-gray-500 text-sm">Rating</p>
+      <p class="font-semibold text-lg">⭐ {{ avg_rating }} / 5</p>
+    </div>
+
+  </div>
+
+  <!-- ===== AVAILABLE DATES ===== -->
+  <div class="bg-orange-50 border border-orange-200 p-6 rounded-xl mb-12 max-w-md">
+    <h3 class="font-bold mb-2">Available Dates</h3>
+    <p class="text-orange-700 font-semibold">
+      {{ destination.start_date }} → {{ destination.end_date }}
+    </p>
+  </div>
+
+  <!-- ===== TWO COLUMN LAYOUT ===== -->
+  <div class="grid md:grid-cols-3 gap-10">
+
+    <!-- ===== LEFT CONTENT ===== -->
+    <div class="md:col-span-2">
+
+      <!-- ABOUT -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">About the Trek</h2>
+        <div class="text-gray-700 leading-relaxed space-y-4">
+          {{ destination.description|linebreaks }}
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold mb-4">Customer Reviews</h2>
+
+      <!-- RATING -->
+      {% for review in reviews %}
+      <div class="bg-white p-4 rounded-xl shadow mb-4">
+        <p class="font-semibold">{{ review.user.username }}</p>
+        <p>⭐ {{ review.rating }}/5</p>
+        <p class="text-gray-600">{{ review.comment }}</p>
+      </div>
+      {% empty %}
+      <p>No reviews yet.</p>
+      {% endfor %}
+
+      {% if user.is_authenticated %}
+      <h3 class="text-xl font-bold mt-8 mb-3">Add Your Review</h3>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-4">
+          <label class="block font-medium mb-2">Rating</label>
+
+          <div id="star-container" class="flex gap-5 text-3xl cursor-pointer">
+            <span data-value="1">☆</span>
+            <span data-value="2">☆</span>
+            <span data-value="3">☆</span>
+            <span data-value="4">☆</span>
+            <span data-value="5">☆</span>
+          </div>
+
+          <!-- Hidden input to store value -->
+          <input type="hidden" name="rating" id="rating-input" required>
+        </div>
+
+        <textarea name="comment"
+          class="border p-2 w-full mb-3"
+          placeholder="Write your experience..."></textarea>
+
+        <button class="bg-orange-600 text-white px-4 py-2 rounded">
+          Submit Review
+        </button>
+      </form>
+      {% else %}
+      <p class="text-gray-500 mt-4">Login to add a review</p>
+      {% endif %}
+
+      <!-- LOCATION -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Location</h2>
+        <div class="bg-gray-50 p-6 rounded-xl flex justify-between items-center">
+          <div>
+            <p class="font-semibold">{{ destination.name }}</p>
+            <p class="text-gray-600">{{ destination.location }}</p>
+          </div>
+          <a href="https://www.google.com/maps/search/?api=1&query={{ destination.location }}"
+             target="_blank"
+             class="bg-orange-600 text-white px-4 py-2 rounded-lg">
+            Get Directions
+          </a>
+        </div>
+      </div>
+
+      <!-- TRANSPORT -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Transportation</h2>
+        <div class="bg-gray-50 p-6 rounded-xl">
+          <p class="font-semibold">{{ destination.transport_mode }}</p>
+          <p class="text-gray-600 mt-1">
+            Comfortable and reliable transportation included in the package.
+          </p>
+        </div>
+      </div>
+
+      <!-- HIGHLIGHTS -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">Highlights</h2>
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow">
+            <h4 class="font-semibold mb-2">🌄 Scenic Beauty</h4>
+            <p class="text-gray-600">
+              Stunning landscapes, sunrise and sunset views.
+            </p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow">
+            <h4 class="font-semibold mb-2">🏛 Cultural Experience</h4>
+            <p class="text-gray-600">
+              Interact with local communities and heritage.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== RIGHT STICKY PRICE BOX ===== -->
+    <div class="md:col-span-1">
+
+      <div class="sticky top-28 bg-gradient-to-r from-orange-600 to-red-600
+                  text-white p-8 rounded-2xl shadow-xl">
+
+        <p class="text-sm opacity-90">Starting from</p>
+        <h2 class="text-4xl font-bold mb-4">₹ {{ destination.price }}</h2>
+
+        {% if destination.status == "available" %}
+          <a href="{% url 'book_destination' destination.id %}"
+             class="block bg-white text-orange-600 text-center py-3 rounded-xl font-semibold">
+            Book Now
+          </a>
+        {% else %}
+          <button disabled
+                  class="block w-full bg-white/50 text-gray-700 py-3 rounded-xl font-semibold">
+            Currently Unavailable
+          </button>
+        {% endif %}
+
+        <p class="text-xs mt-4 opacity-80">
+          * Price includes accommodation, meals, permits and guide services
+        </p>
+        <p class="text-xs mt-4 opacity-80">* Transport charges are included from Pune.</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ===== NEED HELP ===== -->
+  <div class="mt-16 bg-gradient-to-r from-orange-600 to-red-600
+              text-white p-8 rounded-2xl flex flex-col md:flex-row
+              justify-between items-center gap-6">
+
+    <div>
+      <h3 class="text-xl font-bold">Need Help?</h3>
+      <p class="opacity-90">
+        Our travel experts are here to help you plan your perfect trek.
+      </p>
+    </div>
+
+    <a href="{% url 'contact' %}"
+       class="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold">
+      Contact Support
+    </a>
+
+  </div>
+
+</div>
+
+<script>
+const stars = document.querySelectorAll('#star-container span');
+const ratingInput = document.getElementById('rating-input');
+
+stars.forEach(star => {
+    star.addEventListener('click', () => {
+        const value = star.getAttribute('data-value');
+        ratingInput.value = value;
+
+        // reset all stars
+        stars.forEach(s => s.textContent = "☆");
+
+        // fill stars
+        for (let i = 0; i < value; i++) {
+            stars[i].textContent = "⭐";
+        }
+    });
+});
+</script>
+
+<script>
+stars.forEach((star, index) => {
+
+    star.addEventListener('mouseover', () => {
+        stars.forEach((s, i) => {
+            s.textContent = i <= index ? "⭐" : "☆";
+        });
+    });
+
+    star.addEventListener('mouseout', () => {
+        const current = ratingInput.value;
+        stars.forEach((s, i) => {
+            s.textContent = i < current ? "⭐" : "☆";
+        });
+    });
+
+});
+</script>
+
+{% endblock %}
